@@ -34,8 +34,19 @@ try:
         for bc in boxer_cards:
             if VACANT == bc.boxer_name:
                 continue
-            dal.insert_boxer(weight_division_name, bc)
-    # loop through the P4P boxer... perform an UPDATE operation instead of an INSERT
+            print(f'{weight_division_name} :: {bc.boxer_ranking}) {bc.boxer_name} :: {bc.boxer_ranking}')
+            # dal.insert_boxer(weight_division_name, bc)
+    # loop through the P4P boxers... perform an UPDATE operation instead of an INSERT
+    p4p_url = p4p_weight_division.get_attribute('data-href')
+    print(f'P4P :: NAVIGATING TO {p4p_url}...')
+    chrome_boxers.get(p4p_url)
+    boxer_page = BoxerPage(chrome_boxers)
+    boxer_cards = boxer_page.boxer_cards()
+    print(f'P4P :: boxer_cards len <{len(boxer_cards)}>')
+    for bc in boxer_cards:
+        boxer_record_upd = dal.get_p4p_boxers(bc.boxer_name)
+        print(f'boxer_record_upd.id {boxer_record_upd[0][0]}')
+        dal.update_boxer_p4p_ranking(boxer_record_upd[0][0], bc.boxer_ranking)
     input('Press any button to complete: ')
 except Exception as e:
     print(e)
